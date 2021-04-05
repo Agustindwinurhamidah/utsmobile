@@ -21,9 +21,7 @@ class EntryFormState extends State<EntryFormKategori> {
   Widget build(BuildContext context) {
 //kondisi
     if (kategori != null) {
-      namekategoriController.text = kategori.name;
-     
-      
+      namekategoriController.text = kategori.namekategori; 
       
     }
 //rubah
@@ -37,7 +35,7 @@ class EntryFormState extends State<EntryFormKategori> {
           child: ListView(
             children: <Widget>[
 // nama
-              Padding(
+               Padding(
                 padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
                 child: TextField(
                   controller: namekategoriController,
@@ -53,7 +51,6 @@ class EntryFormState extends State<EntryFormKategori> {
                   },
                 ),
               ),
-// harga
              
                
              
@@ -80,7 +77,7 @@ class EntryFormState extends State<EntryFormKategori> {
                                 
                           } else {
 // ubah data
-                            kategori.name = namekategoriController.text;
+                            kategori.namekategori = namekategoriController.text;
                            
                            
                             

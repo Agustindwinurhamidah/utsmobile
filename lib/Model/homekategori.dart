@@ -8,66 +8,43 @@ import 'dart:async';
 import 'stok.dart'; 
 //pendukung program asinkron
 
-class Home extends StatefulWidget {
+class HomeKategori extends StatefulWidget {//membuat class kategori
   @override
-  HomeState createState() => HomeState();
+  HomeKategoriState createState() => HomeKategoriState();
 }
 
-class HomeState extends State<Home> {
-  DbHelper dbHelper = DbHelper();
+class HomeKategoriState extends State<HomeKategori> {
+  DbHelper dbHelper = DbHelper();//manggil dbhelper
   int count = 0;
-  List<Item> itemList;
+  List<Kategori> kategoriList;
   @override
   Widget build(BuildContext context) {
-    @override
-  void initState() {
-    super.initState();
     updateListView();
-  }
-    if (itemList == null) {
-      itemList = List<Item>();
+    if (kategoriList == null) {
+      kategoriList = List<Kategori>();
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text('Daftar Item'),
+        title: Text('Daftar Kategori Hijab'),//membuat tampilan bar yang bertuliskan daftar kategori hijab
       ),
-      body: Column(children: [
-        Expanded(
-          child: createListView(),
-        ),
-        Container(
-          alignment: Alignment.bottomCenter,
-          child: SizedBox(
-            width: double.infinity,
-            child: RaisedButton(
-              child: Text("Tambah Item"),
-              onPressed: () async {
-                var item = await navigateToEntryForm(context, null);
-                if (item != null) {
-//TODO 2 Panggil Fungsi untuk Insert ke DB
-                  int result = await dbHelper.insert(item);
-                  if (result > 0) {
-                    updateListView();
-                  }
+    body:Column(children: [
+      Expanded(
+        child: createListView(),
+      ),
+      Container(
+        alignment: Alignment.bottomCenter,
+        child: SizedBox(
+          width: double.infinity,
+          child: RaisedButton(
+            child: Text("Tambah Kategori"),//button unutk nambah kategori
+            onPressed: () async {
+              var kategori = await navigateToEntryForm(context, null);
+              if (kategori != null) {
+                //TODO 2 Panggil Fungsi untuk Insert ke DB
+                int result = await dbHelper.insertKategori(kategori);
+                if (result > 0) {
+                  updateListView();
                 }
-              },
-            ),
-          ),
-        ),
-        Container(
-          alignment: Alignment.bottomCenter,
-          child: SizedBox(
-            width: double.infinity,
-            child: RaisedButton(
-              child: Text("Tambah Kategori"),
-              onPressed: () async {
-                var kategori = await navigateToKategoriForm(context, null);
-                if (kategori != null) {
-//TODO 2 Panggil Fungsi untuk Insert ke DB
-                  int result = await dbHelper.insertKategori(kategori);
-                  if (result > 0) {
-                    updateListView();
-                  }
                 }
               },
             ),
@@ -76,15 +53,7 @@ class HomeState extends State<Home> {
       ]),
     );
   }
-
-  Future<Item> navigateToEntryForm(BuildContext context, Item item) async {
-    var result = await Navigator.push(context,
-        MaterialPageRoute(builder: (BuildContext context) {
-      return EntryForm(item);
-    }));
-    return result;
-  }
-  Future<Kategori> navigateToKategoriForm(BuildContext context, Kategori kategori) async {
+  Future<Kategori> navigateToEntryForm(BuildContext context, Kategori kategori) async {
     var result = await Navigator.push(context,
         MaterialPageRoute(builder: (BuildContext context) {
       return EntryFormKategori(kategori);
@@ -106,26 +75,26 @@ class HomeState extends State<Home> {
               child: Icon(Icons.ad_units),
             ),
             title: Text(
-              this.itemList[index].name,
+              this.kategoriList[index].namekategori,
               style: textStyle,
             ),
-            subtitle: Text(this.itemList[index].price.toString()),
+
             trailing: GestureDetector(
               child: Icon(Icons.delete),
               onTap: () async {
-//TODO 3 Panggil Fungsi untuk Delete dari DB berdasarkan Item
-              dbHelper.delete(this.itemList[index].id);
-              updateListView();
+                dbHelper.deleteKategori(this.kategoriList[index].id);
+                updateListView();
+                //TODO 3 Panggil Fungsi untuk Delete dari DB berdasarkan Item
               },
             ),
             onTap: () async {
-              var item =
-                  await navigateToEntryForm(context, this.itemList[index]);
-//TODO 4 Panggil Fungsi untuk Edit data
-          if (item != null){
-              dbHelper.update(item);
-              updateListView();
-            }  
+              var kategori =
+                  await navigateToEntryForm(context, this.kategoriList[index]);
+              //TODO 4 Panggil Fungsi untuk Edit data
+              int result = await dbHelper.updateKategori(kategori);
+              if (result > 0) {
+                updateListView();
+              }
             },
           ),
         );
@@ -133,22 +102,20 @@ class HomeState extends State<Home> {
     );
   }
 
-//update List item
+  //update List item
   void updateListView() {
     final Future<Database> dbFuture = dbHelper.initDb();
-        dbFuture.then((database) {
-    //TODO 1 Select data dari DB
-          Future<List<Item>> itemListFuture = dbHelper.getItemList();
-          itemListFuture.then((itemList) {
-            setState(() {
-              this.itemList = itemList;
-              this.count = itemList.length;
-            });
-          });
+    dbFuture.then((database) {
+      //TODO 1 Select data dari DB
+      Future<List<Kategori>> kategoriListFuture = dbHelper.getKategoriList();
+      kategoriListFuture.then((kategoriList) {
+        setState(() {
+          this.kategoriList = kategoriList;
+          this.count = kategoriList.length;
         });
-      }
-    }
-    
-   
+      });
+    });
+  }
+}
 
 

@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'stok.dart';
 
 class EntryForm extends StatefulWidget {
-  final Item item;
-  EntryForm(this.item);
+  final Stok stok;
+  EntryForm(this.stok);
   @override
-  EntryFormState createState() => EntryFormState(this.item);
+  EntryFormState createState() => EntryFormState(this.stok);
 }
 
 //class controller
 class EntryFormState extends State<EntryForm> {
-  Item item;
-  EntryFormState(this.item);
+  Stok stok;
+  EntryFormState(this.stok);
   TextEditingController nameController = TextEditingController();
   TextEditingController priceController = TextEditingController();
   TextEditingController stokController = TextEditingController();
@@ -20,18 +20,11 @@ class EntryFormState extends State<EntryForm> {
   
   @override
   Widget build(BuildContext context) {
-//kondisi
-    if (item != null) {
-      nameController.text = item.name;
-      priceController.text = item.price.toString();
-      stokController.text = item.stok.toString();
-      
-      
-    }
+
 //rubah
     return Scaffold(
         appBar: AppBar(
-          title: item == null ? Text('Tambah') : Text('Ubah'),
+          title: stok == null ? Text('Tambah') : Text('Ubah'),
           leading: Icon(Icons.keyboard_arrow_left),
         ),
         body: Padding(
@@ -68,7 +61,7 @@ class EntryFormState extends State<EntryForm> {
                     ),
                   ),
                   onChanged: (value) {
-//
+//stok
                   },
                 ),
               ),
@@ -104,23 +97,23 @@ class EntryFormState extends State<EntryForm> {
                           textScaleFactor: 1.5,
                         ),
                         onPressed: () {
-                          if (item == null) {
+                          if (stok == null) {
 // tambah data
-                            item = Item(
+                            stok = Stok(
                                 nameController.text,
                                 int.parse(priceController.text),
                                 int.parse(stokController.text));
                                 
                           } else {
 // ubah data
-                            item.name = nameController.text;
-                            item.price = int.parse(priceController.text);
-                            item.stok = int.parse(stokController.text);
+                            stok.name = nameController.text;
+                            stok.price = int.parse(priceController.text);
+                            stok.stok = int.parse(stokController.text);
                            
                             
                           }
 // kembali ke layar sebelumnya dengan membawa objek item
-                          Navigator.pop(context, item);
+                          Navigator.pop(context, stok);
                         },
                       ),
                     ),

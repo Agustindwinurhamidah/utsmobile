@@ -11,95 +11,110 @@ class DbHelper {
   static Database _database;
   DbHelper._createObject();
   Future<Database> initDb() async {
-//untuk menentukan nama database dan lokasi yg dibuat
+    //untuk menentukan nama database dan lokasi yg dibuat
     Directory directory = await getApplicationDocumentsDirectory();
-    String path = directory.path + 'item.db';
-//create, read databases
-    var itemDatabase = openDatabase(path, version: 4, onCreate: _createDb);
-//mengembalikan nilai object sebagai hasil dari fungsinya
+    String path = directory.path + 'stok.db';
+
+    //create, read databases
+    var itemDatabase = openDatabase(path, version: 6, onCreate: _createDb, onUpgrade: _onUpgrade);
+    //mengembalikan nilai object sebagai hasil dari fungsinya
     return itemDatabase;
   }
 
-//buat tabel baru dengan nama item
+  //update tabel
+  void _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    _createDb(db, newVersion);
+  }
+
+  //buat tabel baru dengan nama item
   void _createDb(Database db, int version) async {
-    await db.execute('''
-    CREATE TABLE stok (
+    var batch = db.batch();
+    batch.execute('DROP TABLE IF EXISTS stok');
+    batch.execute('DROP TABLE IF EXISTS kategori');
+    batch.execute('''
+      CREATE TABLE stok (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT,
       price INTEGER,
       stok INTEGER
       )
-      ''');
-      await db.execute('''
+    ''');
+    batch.execute('''
       CREATE TABLE kategori (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        namekategori TEXT
-        )
-        ''');
-        }
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      namekategori TEXT
+      
+      )
+    ''');
+    await batch.commit();
+  }
 
 //select databases
-  Future<List<Map<String, dynamic>>> select() async {
+  Future<List<Map<String, dynamic>>> selectStok() async {
     Database db = await this.initDb();
-    var mapList = await db.query('item', orderBy: 'name');
+    var mapList = await db.query('stok',orderBy: 'name'); //menampilkan data dari table diurutkan dengan nama
     return mapList;
   }
+
   Future<List<Map<String, dynamic>>> selectKategori() async {
     Database db = await this.initDb();
-    var mapList = await db.query('kategori', orderBy: 'name');
+    var mapList = await db.query('kategori',orderBy: 'namekategori'); //menampilkan data dari table diurutkan dengan nama
     return mapList;
   }
 
 //create databases
-  Future<int> insert(Item object) async {
+  Future<int> insertStok(Stok object) async {
     Database db = await this.initDb();
-    int count = await db.insert('item', object.toMap());
+    int count = await db.insert('stok', object.toMap());
     return count;
   }
-   Future<int> insertKategori(Kategori object) async {
+
+  Future<int> insertKategori(Kategori object) async {
     Database db = await this.initDb();
     int count = await db.insert('kategori', object.toMap());
     return count;
   }
 
 //update databases
-  Future<int> update(Item object) async {
+  Future<int> updatestok(Stok object) async {
     Database db = await this.initDb();
-    int count = await db.update('item', object.toMap(), where: 'id=?', whereArgs: [object.id]);
+    int count = await db.update('stok', object.toMap(), where: 'id=?', whereArgs: [object.id]);
     return count;
   }
+
   Future<int> updateKategori(Kategori object) async {
     Database db = await this.initDb();
     int count = await db.update('kategori', object.toMap(), where: 'id=?', whereArgs: [object.id]);
     return count;
   }
 
-//delete databases
- 
-  Future<int> delete(int id) async {
+  //delete databases
+  Future<int> deleteStok(int id) async {
     Database db = await this.initDb();
-    int count = await db.delete('item', where: 'id=?', whereArgs: [id]);
+    int count = await db.delete('stok', where: 'id=?', whereArgs: [id]);
     return count;
   }
-   Future<int> deleteKategori(int id) async {
+
+  Future<int> deleteKategori(int id) async {
     Database db = await this.initDb();
     int count = await db.delete('kategori', where: 'id=?', whereArgs: [id]);
     return count;
   }
 
-  Future<List<Item>> getItemList() async {
-    var itemMapList = await select();
-    int count = itemMapList.length;
-    List<Item> itemList = List<Item>();
+  Future<List<Stok>> getstokList() async {
+    var stokMapList = await selectStok();
+    int count = stokMapList.length;
+    List<Stok> stokList = [];
     for (int i = 0; i < count; i++) {
-      itemList.add(Item.fromMap(itemMapList[i]));
+      stokList.add(Stok.fromMap(stokMapList[i]));
     }
-    return itemList;
+    return stokList;
   }
-   Future<List<Kategori>> getKategoriList() async {
-    var kategoriMapList = await select();
+
+  Future<List<Kategori>> getKategoriList() async {
+    var kategoriMapList = await selectKategori();
     int count = kategoriMapList.length;
-    List<Kategori> kategoriList = List<Kategori>();
+    List<Kategori> kategoriList = [];
     for (int i = 0; i < count; i++) {
       kategoriList.add(Kategori.fromMap(kategoriMapList[i]));
     }

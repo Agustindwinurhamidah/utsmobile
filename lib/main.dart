@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:utsmobile/Model/homestok.dart';
+import 'package:utsmobile/Model/homestok.dart';
+import 'package:utsmobile/Model/homekategori.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -7,11 +10,32 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Tambahkan Item',
       theme: ThemeData(
         primarySwatch: Colors.red,
       ),
-      home: Home(),
+      home: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+            appBar: AppBar(
+              title: Text("Toko Hijab Agustin Dwi"),//judul pada bar awal
+              bottom: TabBar(
+                tabs: [
+                  Tab(
+                    text: "Stok",//bar stok
+                  ),
+                  Tab(
+                    text: "Kategori",//bar kategori
+                  ),
+                ],
+              ),
+            ),
+            body: TabBarView(//2 tabel
+              children: [
+                HomeStok(),//memanggil class stok
+                HomeKategori(),//memanggil class kategori
+              ],
+            )),
+      ),
     );
   }
 }
