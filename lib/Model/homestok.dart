@@ -79,7 +79,7 @@ class HomeStokState extends State<HomeStok> {
               this.stokList[index].name,
               style: textStyle,
             ),
-            subtitle: Text('Stok='+ this.stokList[index].stok.toString()),
+            subtitle: Text('ID='+ this.stokList[index].id.toString()),
 
             trailing: GestureDetector(
               child: Icon(Icons.delete),

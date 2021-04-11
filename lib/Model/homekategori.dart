@@ -78,7 +78,7 @@ class HomeKategoriState extends State<HomeKategori> {
               this.kategoriList[index].namekategori,
               style: textStyle,
             ),
-
+          subtitle: Text('ID='+ this.kategoriList[index].id.toString()),
             trailing: GestureDetector(
               child: Icon(Icons.delete),
               onTap: () async {

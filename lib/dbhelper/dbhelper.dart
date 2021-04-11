@@ -52,13 +52,21 @@ class DbHelper {
 //select databases
   Future<List<Map<String, dynamic>>> selectStok() async {
     Database db = await this.initDb();
-    var mapList = await db.query('stok',orderBy: 'name'); //menampilkan data dari table diurutkan dengan nama
+    var mapList = await db.query(
+      'stok',
+      orderBy: 'id DESC',
+      limit: 3,
+    ); //menampilkan data dari table diurutkan dengan nama
     return mapList;
   }
 
   Future<List<Map<String, dynamic>>> selectKategori() async {
     Database db = await this.initDb();
-    var mapList = await db.query('kategori',orderBy: 'namekategori'); //menampilkan data dari table diurutkan dengan nama
+    var mapList = await db.query(
+      'kategori',
+      orderBy: 'id DESC',
+      limit: 3,
+    ); //menampilkan data dari table diurutkan dengan nama
     return mapList;
   }
 
